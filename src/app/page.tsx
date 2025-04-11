@@ -42,7 +42,7 @@ export default function Home() {
     async function fetchData() {
       try {
         setError(null);
-        const response = await fetch("http://192.168.107.234:5000/sensors");
+        const response = await fetch("/api");
         if (!response.ok) {
           throw new Error(`Failed to fetch data: ${response.status} ${response.statusText}`);
         }
