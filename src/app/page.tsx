@@ -1,7 +1,12 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { ChartConfig, ChartContainer } from "@/components/ui/chart";
+import {
+  ChartConfig,
+  ChartContainer,
+  ChartLegend,
+  ChartLegendContent,
+} from "@/components/ui/chart";
 import {
   LineChart,
   Line,
@@ -9,7 +14,7 @@ import {
   YAxis,
   CartesianGrid,
   Tooltip,
-  Legend,
+  Area,
 } from "recharts";
 
 interface SensorData {
@@ -150,7 +155,21 @@ export default function Home() {
           </h2>
           <ChartContainer config={chartConfig} className="h-[200px] w-full">
             <LineChart data={accelerationChartData}>
-              <CartesianGrid strokeDasharray="3 3" />
+              <defs>
+                <linearGradient id="colorX" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%" stopColor="#4F46E5" stopOpacity={0.8} />
+                  <stop offset="95%" stopColor="#4F46E5" stopOpacity={0} />
+                </linearGradient>
+                <linearGradient id="colorY" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%" stopColor="#10B981" stopOpacity={0.8} />
+                  <stop offset="95%" stopColor="#10B981" stopOpacity={0} />
+                </linearGradient>
+                <linearGradient id="colorZ" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%" stopColor="#EF4444" stopOpacity={0.8} />
+                  <stop offset="95%" stopColor="#EF4444" stopOpacity={0} />
+                </linearGradient>
+              </defs>
+              <CartesianGrid vertical={false} />
               <XAxis
                 dataKey="time"
                 label={{
@@ -163,13 +182,38 @@ export default function Home() {
                 label={{ value: "g", angle: -90, position: "insideLeft" }}
               />
               <Tooltip formatter={(value) => [`${value} g`, null]} />
-              <Legend />
+              <ChartLegend>
+                <ChartLegendContent />
+              </ChartLegend>
+              <Area
+                type="monotone"
+                dataKey="x"
+                stroke="#4F46E5"
+                fillOpacity={1}
+                fill="url(#colorX)"
+              />
+              <Area
+                type="monotone"
+                dataKey="y"
+                stroke="#10B981"
+                fillOpacity={1}
+                fill="url(#colorY)"
+              />
+              <Area
+                type="monotone"
+                dataKey="z"
+                stroke="#EF4444"
+                fillOpacity={1}
+                fill="url(#colorZ)"
+              />
               <Line
                 type="monotone"
                 dataKey="x"
                 stroke="#4F46E5"
                 name="X-axis"
                 isAnimationActive={false}
+                strokeWidth={2}
+                dot={{ r: 3 }}
               />
               <Line
                 type="monotone"
@@ -177,6 +221,8 @@ export default function Home() {
                 stroke="#10B981"
                 name="Y-axis"
                 isAnimationActive={false}
+                strokeWidth={2}
+                dot={{ r: 3 }}
               />
               <Line
                 type="monotone"
@@ -184,6 +230,8 @@ export default function Home() {
                 stroke="#EF4444"
                 name="Z-axis"
                 isAnimationActive={false}
+                strokeWidth={2}
+                dot={{ r: 3 }}
               />
             </LineChart>
           </ChartContainer>
@@ -195,7 +243,21 @@ export default function Home() {
           </h2>
           <ChartContainer config={chartConfig} className="h-[200px] w-full">
             <LineChart data={gyroChartData}>
-              <CartesianGrid strokeDasharray="3 3" />
+              <defs>
+                <linearGradient id="colorX" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%" stopColor="#4F46E5" stopOpacity={0.8} />
+                  <stop offset="95%" stopColor="#4F46E5" stopOpacity={0} />
+                </linearGradient>
+                <linearGradient id="colorY" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%" stopColor="#10B981" stopOpacity={0.8} />
+                  <stop offset="95%" stopColor="#10B981" stopOpacity={0} />
+                </linearGradient>
+                <linearGradient id="colorZ" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%" stopColor="#EF4444" stopOpacity={0.8} />
+                  <stop offset="95%" stopColor="#EF4444" stopOpacity={0} />
+                </linearGradient>
+              </defs>
+              <CartesianGrid vertical={false} />
               <XAxis
                 dataKey="time"
                 label={{
@@ -208,13 +270,38 @@ export default function Home() {
                 label={{ value: "°/s", angle: -90, position: "insideLeft" }}
               />
               <Tooltip formatter={(value) => [`${value} °/s`, null]} />
-              <Legend />
+              <ChartLegend>
+                <ChartLegendContent />
+              </ChartLegend>
+              <Area
+                type="monotone"
+                dataKey="x"
+                stroke="#4F46E5"
+                fillOpacity={1}
+                fill="url(#colorX)"
+              />
+              <Area
+                type="monotone"
+                dataKey="y"
+                stroke="#10B981"
+                fillOpacity={1}
+                fill="url(#colorY)"
+              />
+              <Area
+                type="monotone"
+                dataKey="z"
+                stroke="#EF4444"
+                fillOpacity={1}
+                fill="url(#colorZ)"
+              />
               <Line
                 type="monotone"
                 dataKey="x"
                 stroke="#4F46E5"
                 name="X-axis"
                 isAnimationActive={false}
+                strokeWidth={2}
+                dot={{ r: 3 }}
               />
               <Line
                 type="monotone"
@@ -222,6 +309,8 @@ export default function Home() {
                 stroke="#10B981"
                 name="Y-axis"
                 isAnimationActive={false}
+                strokeWidth={2}
+                dot={{ r: 3 }}
               />
               <Line
                 type="monotone"
@@ -229,6 +318,8 @@ export default function Home() {
                 stroke="#EF4444"
                 name="Z-axis"
                 isAnimationActive={false}
+                strokeWidth={2}
+                dot={{ r: 3 }}
               />
             </LineChart>
           </ChartContainer>
@@ -240,7 +331,21 @@ export default function Home() {
           </h2>
           <ChartContainer config={chartConfig} className="h-[200px] w-full">
             <LineChart data={magneticFieldChartData}>
-              <CartesianGrid strokeDasharray="3 3" />
+              <defs>
+                <linearGradient id="colorX" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%" stopColor="#4F46E5" stopOpacity={0.8} />
+                  <stop offset="95%" stopColor="#4F46E5" stopOpacity={0} />
+                </linearGradient>
+                <linearGradient id="colorY" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%" stopColor="#10B981" stopOpacity={0.8} />
+                  <stop offset="95%" stopColor="#10B981" stopOpacity={0} />
+                </linearGradient>
+                <linearGradient id="colorZ" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%" stopColor="#EF4444" stopOpacity={0.8} />
+                  <stop offset="95%" stopColor="#EF4444" stopOpacity={0} />
+                </linearGradient>
+              </defs>
+              <CartesianGrid vertical={false} />
               <XAxis
                 dataKey="time"
                 label={{
@@ -253,13 +358,38 @@ export default function Home() {
                 label={{ value: "μT", angle: -90, position: "insideLeft" }}
               />
               <Tooltip formatter={(value) => [`${value} μT`, null]} />
-              <Legend />
+              <ChartLegend>
+                <ChartLegendContent />
+              </ChartLegend>
+              <Area
+                type="monotone"
+                dataKey="x"
+                stroke="#4F46E5"
+                fillOpacity={1}
+                fill="url(#colorX)"
+              />
+              <Area
+                type="monotone"
+                dataKey="y"
+                stroke="#10B981"
+                fillOpacity={1}
+                fill="url(#colorY)"
+              />
+              <Area
+                type="monotone"
+                dataKey="z"
+                stroke="#EF4444"
+                fillOpacity={1}
+                fill="url(#colorZ)"
+              />
               <Line
                 type="monotone"
                 dataKey="x"
                 stroke="#4F46E5"
                 name="X-axis"
                 isAnimationActive={false}
+                strokeWidth={2}
+                dot={{ r: 3 }}
               />
               <Line
                 type="monotone"
@@ -267,6 +397,8 @@ export default function Home() {
                 stroke="#10B981"
                 name="Y-axis"
                 isAnimationActive={false}
+                strokeWidth={2}
+                dot={{ r: 3 }}
               />
               <Line
                 type="monotone"
@@ -274,6 +406,8 @@ export default function Home() {
                 stroke="#EF4444"
                 name="Z-axis"
                 isAnimationActive={false}
+                strokeWidth={2}
+                dot={{ r: 3 }}
               />
             </LineChart>
           </ChartContainer>
@@ -285,7 +419,7 @@ export default function Home() {
           </h2>
           <ChartContainer config={chartConfig} className="h-[200px] w-full">
             <LineChart data={temperatureChartData}>
-              <CartesianGrid strokeDasharray="3 3" />
+              <CartesianGrid vertical={false} />
               <XAxis
                 dataKey="time"
                 label={{
@@ -298,13 +432,17 @@ export default function Home() {
                 label={{ value: "°C", angle: -90, position: "insideLeft" }}
               />
               <Tooltip formatter={(value) => [`${value} °C`, null]} />
-              <Legend />
+              <ChartLegend>
+                <ChartLegendContent />
+              </ChartLegend>
               <Line
                 type="monotone"
                 dataKey="value"
                 stroke="#F59E0B"
                 name="Temperature"
                 isAnimationActive={false}
+                strokeWidth={2}
+                dot={{ r: 3 }}
               />
             </LineChart>
           </ChartContainer>
