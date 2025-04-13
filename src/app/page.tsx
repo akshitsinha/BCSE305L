@@ -54,7 +54,7 @@ const chartConfig = {
 
 const MAX_HISTORY_LENGTH = 20;
 
-export default function Home() {
+const Home = () => {
   const [data, setData] = useState<SensorData | null>(null);
   const [history, setHistory] = useState<Array<SensorData>>([]);
 
@@ -449,6 +449,13 @@ export default function Home() {
         </div>
 
         <div className="md:col-span-2">
+          <h2 className="text-lg font-semibold mb-4">Live Camera Stream</h2>
+          <div className="p-4 bg-gray-50 rounded-lg">
+            <VideoStream />
+          </div>
+        </div>
+
+        <div className="md:col-span-2">
           <h2 className="text-lg font-semibold mb-4">
             Current Sensor Readings
           </h2>
@@ -489,3 +496,18 @@ export default function Home() {
     </div>
   );
 }
+
+const VideoStream = () => {
+  return (
+    <div>
+      <h2>Live Camera Stream</h2>
+      <img
+        src="http://localhost:5000/video"
+        alt="Live Camera"
+        style={{ width: "100%", maxWidth: "640px", border: "2px solid black" }}
+      />
+    </div>
+  );
+};
+
+export default Home;
