@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, lazy, Suspense } from "react";
 import {
   ChartConfig,
   ChartContainer,
@@ -115,7 +115,15 @@ const Home = () => {
   }, []);
 
   if (!data) {
-    return <div>Loading...</div>;
+    return (
+      <div className="flex items-center justify-center h-screen bg-gray-100">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-blue-500 border-solid mb-4"></div>
+          <h1 className="text-xl font-semibold text-gray-700">Loading Sensor Data...</h1>
+          <p className="text-gray-500">Please wait while we fetch the latest data.</p>
+        </div>
+      </div>
+    );
   }
 
   const accelerationChartData = history.map((item, index) => ({
@@ -448,14 +456,7 @@ const Home = () => {
           </ChartContainer>
         </div>
 
-        <div className="md:col-span-2">
-          <h2 className="text-lg font-semibold mb-4">Live Camera Stream</h2>
-          <div className="p-4 bg-gray-50 rounded-lg">
-            <VideoStream />
-          </div>
-        </div>
-
-        <div className="md:col-span-2">
+        <div className="md:col-span-1">
           <h2 className="text-lg font-semibold mb-4">
             Current Sensor Readings
           </h2>
@@ -492,22 +493,20 @@ const Home = () => {
             </div>
           </div>
         </div>
+
+        <div className="md:col-span-1">
+          <h2 className="text-lg font-semibold mb-4">Camera Stream</h2>
+          <div className="p-4 bg-gray-50 rounded-lg">
+            <Suspense fallback={<div>Loading video stream...</div>}>
+              <VideoStream />
+            </Suspense>
+          </div>
+        </div>
       </div>
     </div>
   );
-}
-
-const VideoStream = () => {
-  return (
-    <div>
-      <h2>Live Camera Stream</h2>
-      <img
-        src="http://localhost:5000/video"
-        alt="Live Camera"
-        style={{ width: "100%", maxWidth: "640px", border: "2px solid black" }}
-      />
-    </div>
-  );
 };
+
+const VideoStream = lazy(() => import("@/components/VideoStream"));
 
 export default Home;
