@@ -62,6 +62,9 @@ const MAX_HISTORY_LENGTH = 20;
 const Home = () => {
   const [data, setData] = useState<SensorData | null>(null);
   const [history, setHistory] = useState<Array<SensorData>>([]);
+  const [imageUrl, setImageUrl] = useState<string>("");
+  const [predictionResult, setPredictionResult] = useState<string | null>(null);
+  const [isPredicting, setIsPredicting] = useState(false);
 
   useEffect(() => {
     async function fetchData() {
@@ -123,6 +126,41 @@ const Home = () => {
     const interval = setInterval(fetchData, 1000);
     return () => clearInterval(interval);
   }, []);
+
+  const handleImageUrlChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setImageUrl(e.target.value);
+    setPredictionResult(null);
+  };
+
+  const handlePredictClick = async () => {
+    if (!imageUrl) return;
+
+    setIsPredicting(true);
+    setPredictionResult(null);
+
+    try {
+      const response = await fetch(
+        `/predict?image_url=${encodeURIComponent(
+          imageUrl
+        )}`,
+        {
+          method: "GET",
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error(`Prediction request failed: ${response.status}`);
+      }
+
+      const result = await response.json();
+      setPredictionResult(JSON.stringify(result, null, 2));
+    } catch (error) {
+      console.error("Error predicting image:", error);
+      setPredictionResult("Error: Failed to get prediction");
+    } finally {
+      setIsPredicting(false);
+    }
+  };
 
   if (!data) {
     return (
@@ -600,6 +638,59 @@ const Home = () => {
               />
             </LineChart>
           </ChartContainer>
+        </div>
+
+        <div className="p-4 bg-white rounded-lg shadow">
+          <h2 className="text-lg font-semibold mb-4">Image Analysis</h2>
+          <div className="flex flex-col space-y-4">
+            <div className="flex flex-col">
+              <label className="text-sm font-medium text-gray-700 mb-1">
+                Image URL
+              </label>
+              <input
+                type="text"
+                value={imageUrl}
+                onChange={handleImageUrlChange}
+                placeholder="Enter image URL (e.g., https://example.com/image.jpg)"
+                className="p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+            </div>
+
+            {imageUrl && (
+              <div className="mt-4">
+                <img
+                  src={imageUrl}
+                  alt="Preview"
+                  className="max-h-48 max-w-full mx-auto rounded-lg shadow-sm"
+                  onError={(e) => {
+                    (e.target as HTMLImageElement).style.display = "none";
+                  }}
+                  onLoad={(e) => {
+                    (e.target as HTMLImageElement).style.display = "block";
+                  }}
+                />
+              </div>
+            )}
+
+            <button
+              onClick={handlePredictClick}
+              disabled={!imageUrl || isPredicting}
+              className={`py-2 px-4 rounded-lg font-medium ${
+                !imageUrl || isPredicting
+                  ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                  : "bg-blue-600 text-white hover:bg-blue-700"
+              }`}
+            >
+              {isPredicting ? "Processing..." : "Predict"}
+            </button>
+
+            {predictionResult && (
+              <div className="mt-4 p-3 bg-gray-100 rounded-lg overflow-auto max-h-48">
+                <h3 className="font-medium mb-2">Prediction Result:</h3>
+                <pre className="text-sm">{predictionResult}</pre>
+              </div>
+            )}
+          </div>
         </div>
 
         <div className="md:col-span-1">
