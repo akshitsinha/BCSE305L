@@ -38,6 +38,11 @@ interface SensorData {
     };
     temp_c: number;
   };
+  gyml8511: {
+    raw_adc_value: number;
+    uv_index: number;
+    voltage: number;
+  };
   timestamp: number;
 }
 
@@ -98,6 +103,11 @@ const Home = () => {
             },
             temp_c: 25 + Math.random() * 10,
           },
+          gyml8511: {
+            raw_adc_value: Math.random() * 1024,
+            uv_index: Math.random() * 11,
+            voltage: Math.random() * 5,
+          },
           timestamp: Date.now() / 1000,
         };
         setData(mockData);
@@ -119,8 +129,12 @@ const Home = () => {
       <div className="flex items-center justify-center h-screen bg-gray-100">
         <div className="text-center">
           <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-blue-500 border-solid mb-4"></div>
-          <h1 className="text-xl font-semibold text-gray-700">Loading Sensor Data...</h1>
-          <p className="text-gray-500">Please wait while we fetch the latest data.</p>
+          <h1 className="text-xl font-semibold text-gray-700">
+            Loading Sensor Data...
+          </h1>
+          <p className="text-gray-500">
+            Please wait while we fetch the latest data.
+          </p>
         </div>
       </div>
     );
@@ -150,6 +164,21 @@ const Home = () => {
   const temperatureChartData = history.map((item, index) => ({
     time: index,
     value: item.mpu6050.temp_c,
+  }));
+
+  const uvRawChartData = history.map((item, index) => ({
+    time: index,
+    value: item.gyml8511.raw_adc_value,
+  }));
+
+  const uvIndexChartData = history.map((item, index) => ({
+    time: index,
+    value: item.gyml8511.uv_index,
+  }));
+
+  const uvVoltageChartData = history.map((item, index) => ({
+    time: index,
+    value: item.gyml8511.voltage,
   }));
 
   return (
@@ -456,6 +485,123 @@ const Home = () => {
           </ChartContainer>
         </div>
 
+        <div className="p-4 bg-purple-50 rounded-lg shadow">
+          <h2 className="text-lg font-semibold mb-4">
+            GYML8511 Raw ADC Value over time
+          </h2>
+          <ChartContainer config={chartConfig} className="h-[200px] w-full">
+            <LineChart data={uvRawChartData}>
+              <CartesianGrid vertical={false} />
+              <XAxis
+                dataKey="time"
+                label={{
+                  value: "Time",
+                  position: "insideBottomRight",
+                  offset: -5,
+                }}
+              />
+              <YAxis
+                label={{
+                  value: "ADC Value",
+                  angle: -90,
+                  position: "insideLeft",
+                }}
+              />
+              <Tooltip formatter={(value) => [`${value}`, null]} />
+              <ChartLegend>
+                <ChartLegendContent />
+              </ChartLegend>
+              <Line
+                type="monotone"
+                dataKey="value"
+                stroke="#9333EA"
+                name="ADC Value"
+                isAnimationActive={false}
+                strokeWidth={2}
+                dot={{ r: 3 }}
+              />
+            </LineChart>
+          </ChartContainer>
+        </div>
+
+        <div className="p-4 bg-indigo-50 rounded-lg shadow">
+          <h2 className="text-lg font-semibold mb-4">
+            GYML8511 UV Index over time
+          </h2>
+          <ChartContainer config={chartConfig} className="h-[200px] w-full">
+            <LineChart data={uvIndexChartData}>
+              <CartesianGrid vertical={false} />
+              <XAxis
+                dataKey="time"
+                label={{
+                  value: "Time",
+                  position: "insideBottomRight",
+                  offset: -5,
+                }}
+              />
+              <YAxis
+                label={{
+                  value: "UV Index",
+                  angle: -90,
+                  position: "insideLeft",
+                }}
+              />
+              <Tooltip formatter={(value) => [`${value}`, null]} />
+              <ChartLegend>
+                <ChartLegendContent />
+              </ChartLegend>
+              <Line
+                type="monotone"
+                dataKey="value"
+                stroke="#4F46E5"
+                name="UV Index"
+                isAnimationActive={false}
+                strokeWidth={2}
+                dot={{ r: 3 }}
+              />
+            </LineChart>
+          </ChartContainer>
+        </div>
+
+        <div className="p-4 bg-pink-50 rounded-lg shadow">
+          <h2 className="text-lg font-semibold mb-4">
+            GYML8511 Voltage over time (V)
+          </h2>
+          <ChartContainer config={chartConfig} className="h-[200px] w-full">
+            <LineChart data={uvVoltageChartData}>
+              <CartesianGrid vertical={false} />
+              <XAxis
+                dataKey="time"
+                label={{
+                  value: "Time",
+                  position: "insideBottomRight",
+                  offset: -5,
+                }}
+              />
+              <YAxis
+                label={{
+                  value: "Voltage (V)",
+                  angle: -90,
+                  position: "insideLeft",
+                }}
+              />
+              <Tooltip formatter={(value) => [`${value} V`, null]} />
+              <ChartLegend>
+                <ChartLegendContent />
+              </ChartLegend>
+              <Line
+                type="monotone"
+                dataKey="value"
+                stroke="#EC4899"
+                name="Voltage"
+                isAnimationActive={false}
+                strokeWidth={2}
+                dot={{ r: 3 }}
+              />
+            </LineChart>
+          </ChartContainer>
+        </div>
+
         <div className="md:col-span-1">
           <h2 className="text-lg font-semibold mb-4">
             Current Sensor Readings
@@ -486,6 +632,12 @@ const Home = () => {
             <div className="p-4 bg-white rounded shadow">
               <h3 className="font-medium text-gray-700">Temperature</h3>
               <p>{data.mpu6050.temp_c.toFixed(2)} °C</p>
+            </div>
+            <div className="p-4 bg-white rounded shadow">
+              <h3 className="font-medium text-gray-700">GYML8511 UV Sensor</h3>
+              <p>Raw ADC: {data.gyml8511.raw_adc_value.toFixed(3)}</p>
+              <p>UV Index: {data.gyml8511.uv_index.toFixed(2)}</p>
+              <p>Voltage: {data.gyml8511.voltage.toFixed(2)} V</p>
             </div>
             <div className="p-4 bg-white rounded shadow">
               <h3 className="font-medium text-gray-700">Timestamp</h3>
